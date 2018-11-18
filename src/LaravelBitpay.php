@@ -4,6 +4,7 @@ namespace Vrajroham\LaravelBitpay;
 
 use Bitpay\Bill;
 use Bitpay\Item;
+use Bitpay\PayoutInterface;
 use Bitpay\User;
 use Bitpay\Buyer;
 use Bitpay\Point;
@@ -31,6 +32,10 @@ class LaravelBitpay
         $this->authenticate();
     }
 
+    public function getClient() {
+        return $this->client;
+    }
+
     /**
      * @return \Bitpay\Invoice
      */
@@ -47,6 +52,26 @@ class LaravelBitpay
     public static function createInvoice(Invoice $invoice): Invoice
     {
         return (new self())->client->createInvoice($invoice);
+    }
+
+    /**
+     * @param \Bitpay\PayoutInterface $payout
+     *
+     * @return \Bitpay\
+     */
+    public static function createPayout(PayoutInterface $payout)
+    {
+        return (new self())->client->createPayout($payout);
+    }
+
+    /**
+     * @param $invoiceId
+     *
+     * @return \Bitpay\Invoice
+     */
+    public static function getInvoice($invoiceId): Invoice
+    {
+        return (new self())->client->getInvoice($invoiceId);
     }
 
     /**

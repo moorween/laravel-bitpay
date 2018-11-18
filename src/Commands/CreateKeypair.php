@@ -68,6 +68,7 @@ class CreateKeypair extends Command
         $this->createAndPersistKeypair();
 
         $this->pairWithServerAndCreateToken();
+        $this->createPayrollToken();
 
         $this->writeNewEnvironmentFileWith();
 
@@ -166,5 +167,20 @@ class CreateKeypair extends Command
         $this->bar->finish();
         $this->info(' - Client successfully paired with server');
         $this->token = $newToken->getToken();
+    }
+
+    public function createPayrollToken() {
+        try {
+            $this->pairingCodeLabel = config('app.name').'_BitPay_Client_Payroll';
+            $payrollToken = $this->client->createToken([
+                    'label' => $this->pairingCodeLabel,
+                    'facade' => 'merchant',
+                    'id' => (string) $this->sin, ]
+            );
+        } catch (BitpayException $bitpayException) {
+            throw $bitpayException;
+        }
+        $pairingCode = $payrollToken->getPairingCode();
+        $this->info(' - New Payroll token pairing code: ' . $pairingCode);
     }
 }
